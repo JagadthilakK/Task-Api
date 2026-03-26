@@ -10,6 +10,15 @@ const tasks = [
   },
 ];
 
+const getNextTaskId = () => {
+  if (tasks.length === 0) {
+    return 1;
+  }
+
+  const maxId = Math.max(...tasks.map((task) => task.id));
+  return maxId + 1;
+};
+
 router.get('/', (req, res) => {
   res.status(200).json(tasks);
 });
@@ -38,7 +47,7 @@ router.post('/', (req, res) => {
   }
 
   const newTask = {
-    id: tasks.length + 1,
+    id: getNextTaskId(),
     title: title.trim(),
     completed: false,
   };

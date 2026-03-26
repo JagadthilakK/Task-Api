@@ -72,4 +72,20 @@ router.put('/:id', (req, res) => {
   res.status(200).json(task);
 });
 
+router.delete('/:id', (req, res) => {
+  const taskId = Number(req.params.id);
+
+  const taskIndex = tasks.findIndex((item) => item.id === taskId);
+
+  if (taskIndex === -1) {
+    return res.status(404).json({
+      message: 'Task not found',
+    });
+  }
+
+  const deletedTask = tasks.splice(taskIndex, 1);
+
+  res.status(200).json(deletedTask[0]);
+});
+
 module.exports = router;

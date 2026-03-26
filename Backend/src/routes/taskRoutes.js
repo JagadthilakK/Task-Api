@@ -48,4 +48,28 @@ router.post('/', (req, res) => {
   res.status(201).json(newTask);
 });
 
+router.put('/:id', (req, res) => {
+  const taskId = Number(req.params.id);
+  const { title, completed } = req.body;
+
+  const task = tasks.find((item) => item.id === taskId);
+
+  if (!task) {
+    return res.status(404).json({
+      message: 'Task not found',
+    });
+  }
+
+  if (!title || title.trim() === '') {
+    return res.status(400).json({
+      message: 'Title is required',
+    });
+  }
+
+  task.title = title.trim();
+  task.completed = completed;
+
+  res.status(200).json(task);
+});
+
 module.exports = router;

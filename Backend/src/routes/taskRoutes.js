@@ -14,6 +14,20 @@ router.get('/', (req, res) => {
   res.status(200).json(tasks);
 });
 
+router.get('/:id', (req, res) => {
+  const taskId = Number(req.params.id);
+
+  const task = tasks.find((item) => item.id === taskId);
+
+  if (!task) {
+    return res.status(404).json({
+      message: 'Task not found',
+    });
+  }
+
+  res.status(200).json(task);
+});
+
 router.post('/', (req, res) => {
   const { title } = req.body;
 

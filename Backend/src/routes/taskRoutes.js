@@ -1,100 +1,19 @@
 const express = require('express');
+const {
+  getAllTasks,
+  getTaskById,
+  createTask,
+  updateTask,
+  deleteTask,
+} = require('../controllers/taskController');
+const { validateTask } = require('../validations/taskValidation');
 
 const router = express.Router();
 
-const tasks = [
-  {
-    id: 1,
-    title: 'Learn Express basics',
-    completed: false,
-  },
-];
-
-const getNextTaskId = () => {
-  if (tasks.length === 0) {
-    return 1;
-  }
-
-  const maxId = Math.max(...tasks.map((task) => task.id));
-  return maxId + 1;
-};
-
-router.get('/', (req, res) => {
-  res.status(200).json(tasks);
-});
-
-router.get('/:id', (req, res) => {
-  const taskId = Number(req.params.id);
-
-  const task = tasks.find((item) => item.id === taskId);
-
-  if (!task) {
-    return res.status(404).json({
-      message: 'Task not found',
-    });
-  }
-
-  res.status(200).json(task);
-});
-
-router.post('/', (req, res) => {
-  const { title } = req.body;
-
-  if (!title || title.trim() === '') {
-    return res.status(400).json({
-      message: 'Title is required',
-    });
-  }
-
-  const newTask = {
-    id: getNextTaskId(),
-    title: title.trim(),
-    completed: false,
-  };
-
-  tasks.push(newTask);
-
-  res.status(201).json(newTask);
-});
-
-router.put('/:id', (req, res) => {
-  const taskId = Number(req.params.id);
-  const { title, completed } = req.body;
-
-  const task = tasks.find((item) => item.id === taskId);
-
-  if (!task) {
-    return res.status(404).json({
-      message: 'Task not found',
-    });
-  }
-
-  if (!title || title.trim() === '') {
-    return res.status(400).json({
-      message: 'Title is required',
-    });
-  }
-
-  task.title = title.trim();
-  task.completed = completed;
-
-  res.status(200).json(task);
-});
-
-router.delete('/:id', (req, res) => {
-  const taskId = Number(req.params.id);
-
-  const taskIndex = tasks.findIndex((item) => item.id === taskId);
-
-  if (taskIndex === -1) {
-    return res.status(404).json({
-      message: 'Task not found',
-    });
-  }
-
-  const deletedTask = tasks.splice(taskIndex, 1);
-
-  res.status(200).json(deletedTask[0]);
-});
+router.get('/', getAllTasks);
+router.get('/:id', getTaskById);
+router.post('/', validateTask, createTask);
+router.put('/:id', validateTask, updateTask);
+router.delete('/:id', deleteTask);
 
 module.exports = router;

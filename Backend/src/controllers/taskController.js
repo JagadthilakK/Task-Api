@@ -1,84 +1,118 @@
-const tasks = [
-  {
-    id: 1,
-    title: 'Learn Express basics',
-    completed: false,
-  },
-];
+const mongoose = require('mongoose');
+const Task = require('../models/Task');
 
-const getNextTaskId = () => {
-  if (tasks.length === 0) {
-    return 1;
-  }
-
-  const maxId = Math.max(...tasks.map((task) => task.id));
-  return maxId + 1;
-};
-
-const getAllTasks = (req, res) => {
-  res.status(200).json(tasks);
-};
-
-const getTaskById = (req, res) => {
-  const taskId = Number(req.params.id);
-
-  const task = tasks.find((item) => item.id === taskId);
-
-  if (!task) {
-    return res.status(404).json({
-      message: 'Task not found',
+const getAllTasks = async (req, res) => {
+  try {
+    const tasks = await Task.find().sort({ createdAt: -1 });
+    res.status(200).json(tasks);
+  } catch (error) {
+    res.status(500).json({
+      message: 'Failed to fetch tasks',
     });
   }
-
-  res.status(200).json(task);
 };
 
-const createTask = (req, res) => {
-  const { title } = req.body;
+const getTaskById = async (req, res) => {
+  try {
+    const { id } = req.params;
 
-  const newTask = {
-    id: getNextTaskId(),
-    title,
-    completed: false,
-  };
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        message: 'Invalid task id',
+      });
+    }
 
-  tasks.push(newTask);
+    const task = await Task.findById(id);
 
-  res.status(201).json(newTask);
-};
+    if (!task) {
+      return res.status(404).json({
+        message: 'Task not found',
+      });
+    }
 
-const updateTask = (req, res) => {
-  const taskId = Number(req.params.id);
-  const { title, completed } = req.body;
-
-  const task = tasks.find((item) => item.id === taskId);
-
-  if (!task) {
-    return res.status(404).json({
-      message: 'Task not found',
+    res.status(200).json(task);
+  } catch (error) {
+    res.status(500).json({
+      message: 'Failed to fetch task',
     });
   }
-
-  task.title = title;
-  task.completed = completed;
-
-  res.status(200).json(task);
 };
 
-const deleteTask = (req, res) => {
-  const taskId = Number(req.params.id);
+const createTask = async (req, res) => {
+  try {
+    const { title, completed } = req.body;
 
-  const taskIndex = tasks.findIndex((item) => item.id === taskId);
+    const newTask = await Task.create({
+      title,
+      completed: completed !== undefined ? completed : false,
+    });
 
-  if (taskIndex === -1) {
-    return res.status(404).json({
-      message: 'Task not found',
+    res.status(201).json(newTask);
+  } catch (error) {
+    res.status(500).json({
+      message: 'Failed to create task',
     });
   }
+};
 
-  const deletedTask = tasks.splice(taskIndex, 1);
+const updateTask = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, completed } = req.body;
 
-  res.status(200).json(deletedTask[0]);
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        message: 'Invalid task id',
+      });
+    }
+
+    const task = await Task.findById(id);
+
+    if (!task) {
+      return res.status(404).json({
+        message: 'Task not found',
+      });
+    }
+
+    task.title = title;
+
+    if (completed !== undefined) {
+      task.completed = completed;
+    }
+
+    const updatedTask = await task.save();
+    res.status(200).json(updatedTask);
+  } catch (error) {
+    res.status(500).json({
+      message: 'Failed to update task',
+    });
+  }
+};
+
+const deleteTask = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        message: 'Invalid task id',
+      });
+    }
+
+    const deletedTask = await Task.findByIdAndDelete(id);
+
+    if (!deletedTask) {
+      return res.status(404).json({
+        message: 'Task not found',
+      });
+    }
+
+    res.status(200).json(deletedTask);
+  } catch (error) {
+    res.status(500).json({
+      message: 'Failed to delete task',
+    });
+  }
 };
 
 module.exports = {

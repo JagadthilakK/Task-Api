@@ -1,5 +1,6 @@
 const express = require('express');
 const taskRoutes = require('./routes/taskRoutes');
+const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 
 const app = express();
 
@@ -12,5 +13,8 @@ app.get('/', (req, res) => {
     message: 'Task API is running',
   });
 });
+
+app.use(notFound);
+app.use(errorHandler);
 
 module.exports = app;

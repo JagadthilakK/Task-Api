@@ -1,18 +1,16 @@
 const mongoose = require('mongoose');
 const Task = require('../models/Task');
 
-const getAllTasks = async (req, res) => {
+const getAllTasks = async (req, res, next) => {
   try {
     const tasks = await Task.find().sort({ createdAt: -1 });
     res.status(200).json(tasks);
   } catch (error) {
-    res.status(500).json({
-      message: 'Failed to fetch tasks',
-    });
+    next(error);
   }
 };
 
-const getTaskById = async (req, res) => {
+const getTaskById = async (req, res, next) => {
   try {
     const { id } = req.params;
 
@@ -32,13 +30,11 @@ const getTaskById = async (req, res) => {
 
     res.status(200).json(task);
   } catch (error) {
-    res.status(500).json({
-      message: 'Failed to fetch task',
-    });
+    next(error);
   }
 };
 
-const createTask = async (req, res) => {
+const createTask = async (req, res, next) => {
   try {
     const { title, completed } = req.body;
 
@@ -49,13 +45,11 @@ const createTask = async (req, res) => {
 
     res.status(201).json(newTask);
   } catch (error) {
-    res.status(500).json({
-      message: 'Failed to create task',
-    });
+    next(error);
   }
 };
 
-const updateTask = async (req, res) => {
+const updateTask = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { title, completed } = req.body;
@@ -83,13 +77,11 @@ const updateTask = async (req, res) => {
     const updatedTask = await task.save();
     res.status(200).json(updatedTask);
   } catch (error) {
-    res.status(500).json({
-      message: 'Failed to update task',
-    });
+    next(error);
   }
 };
 
-const patchTask = async (req, res) => {
+const patchTask = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { title, completed } = req.body;
@@ -119,13 +111,11 @@ const patchTask = async (req, res) => {
     const updatedTask = await task.save();
     res.status(200).json(updatedTask);
   } catch (error) {
-    res.status(500).json({
-      message: 'Failed to patch task',
-    });
+    next(error);
   }
 };
 
-const deleteTask = async (req, res) => {
+const deleteTask = async (req, res, next) => {
   try {
     const { id } = req.params;
 
@@ -145,9 +135,7 @@ const deleteTask = async (req, res) => {
 
     res.status(200).json(deletedTask);
   } catch (error) {
-    res.status(500).json({
-      message: 'Failed to delete task',
-    });
+    next(error);
   }
 };
 

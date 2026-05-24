@@ -89,6 +89,42 @@ const updateTask = async (req, res) => {
   }
 };
 
+const patchTask = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, completed } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        message: 'Invalid task id',
+      });
+    }
+
+    const task = await Task.findById(id);
+
+    if (!task) {
+      return res.status(404).json({
+        message: 'Task not found',
+      });
+    }
+
+    if (title !== undefined) {
+      task.title = title;
+    }
+
+    if (completed !== undefined) {
+      task.completed = completed;
+    }
+
+    const updatedTask = await task.save();
+    res.status(200).json(updatedTask);
+  } catch (error) {
+    res.status(500).json({
+      message: 'Failed to patch task',
+    });
+  }
+};
+
 const deleteTask = async (req, res) => {
   try {
     const { id } = req.params;
@@ -120,5 +156,6 @@ module.exports = {
   getTaskById,
   createTask,
   updateTask,
+  patchTask,
   deleteTask,
 };

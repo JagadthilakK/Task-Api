@@ -32,11 +32,17 @@ npm install
 PORT=5001
 MONGODB_URI=your_mongodb_connection_string
 CORS_ORIGIN=http://localhost:3000
+JWT_SECRET=change_this_to_a_long_random_secret
 ```
 
 3. Start server:
 ```bash
 npm start
+```
+
+For development with auto-restart:
+```bash
+npm run dev
 ```
 
 Expected logs:
@@ -115,6 +121,77 @@ Notes:
 ### Delete task
 - `DELETE /tasks/:id`
 
+## Auth Endpoints
+
+### Register
+- `POST /auth/register`
+
+Body:
+```json
+{
+  "name": "User A",
+  "email": "usera@test.com",
+  "password": "password123"
+}
+```
+
+### Login
+- `POST /auth/login`
+
+Body:
+```json
+{
+  "email": "usera@test.com",
+  "password": "password123"
+}
+```
+
+Response includes:
+- `token` (JWT)
+- `user` details
+
+### Logout
+- `POST /auth/logout`
+- Header required: `Authorization: Bearer <token>`
+
+### Forgot Password (development mode)
+- `POST /auth/forgot-password`
+
+Body:
+```json
+{
+  "email": "usera@test.com"
+}
+```
+
+Response returns `resetToken` for testing in Postman.
+
+### Reset Password
+- `POST /auth/reset-password/:token`
+
+Body:
+```json
+{
+  "password": "newpassword123"
+}
+```
+
+Notes:
+- Reset token expires in 15 minutes.
+- Reset invalidates old tokens; user must login again.
+
+## Protected Task Routes
+- `/tasks` routes require JWT token.
+- Send header:
+```text
+Authorization: Bearer <token>
+```
+
+## Multi-Login Session Behavior
+- Logging in again issues a new token and invalidates older tokens.
+- Logout invalidates current token.
+- This is handled with `tokenVersion` checks.
+
 ## Common Status Codes
 - `200` Success
 - `201` Created
@@ -125,3 +202,4 @@ Notes:
 ## Notes
 - API responses expose `id` (not `_id`) and hide `__v`.
 - Data is persisted in MongoDB (Atlas), not in-memory.
+- Tasks are user-scoped; each user sees only their own tasks.

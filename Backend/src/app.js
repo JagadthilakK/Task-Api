@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const taskRoutes = require('./routes/taskRoutes');
+const authRoutes = require('./routes/authRoutes');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 
 const app = express();
@@ -16,6 +17,7 @@ app.use(
 );
 app.use(express.json());
 
+app.use('/auth', authRoutes);
 app.use('/tasks', taskRoutes);
 
 app.get('/', (req, res) => {

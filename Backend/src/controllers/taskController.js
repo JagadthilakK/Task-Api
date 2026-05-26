@@ -3,7 +3,7 @@ const Task = require('../models/Task');
 
 const getAllTasks = async (req, res, next) => {
   try {
-    const tasks = await Task.find().sort({ createdAt: -1 });
+    const tasks = await Task.find({ user: req.user.id }).sort({ createdAt: -1 });
     res.status(200).json(tasks);
   } catch (error) {
     next(error);
@@ -20,7 +20,7 @@ const getTaskById = async (req, res, next) => {
       });
     }
 
-    const task = await Task.findById(id);
+    const task = await Task.findOne({ _id: id, user: req.user.id });
 
     if (!task) {
       return res.status(404).json({
@@ -41,6 +41,7 @@ const createTask = async (req, res, next) => {
     const newTask = await Task.create({
       title,
       completed: completed !== undefined ? completed : false,
+      user: req.user.id,
     });
 
     res.status(201).json(newTask);
@@ -60,7 +61,7 @@ const updateTask = async (req, res, next) => {
       });
     }
 
-    const task = await Task.findById(id);
+    const task = await Task.findOne({ _id: id, user: req.user.id });
 
     if (!task) {
       return res.status(404).json({
@@ -92,7 +93,7 @@ const patchTask = async (req, res, next) => {
       });
     }
 
-    const task = await Task.findById(id);
+    const task = await Task.findOne({ _id: id, user: req.user.id });
 
     if (!task) {
       return res.status(404).json({
@@ -125,7 +126,10 @@ const deleteTask = async (req, res, next) => {
       });
     }
 
-    const deletedTask = await Task.findByIdAndDelete(id);
+    const deletedTask = await Task.findOneAndDelete({
+      _id: id,
+      user: req.user.id,
+    });
 
     if (!deletedTask) {
       return res.status(404).json({

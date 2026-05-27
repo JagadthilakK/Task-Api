@@ -9,6 +9,8 @@ const app = express();
 
 const corsOrigin = process.env.CORS_ORIGIN || 'http://localhost:3000';
 
+app.set('trust proxy', 1);
+
 app.use(helmet());
 app.use(
   cors({

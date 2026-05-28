@@ -1,0 +1,215 @@
+:root {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #17212b;
+  background: linear-gradient(145deg, #f4f7fb 0%, #e8edf7 100%);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.card {
+  width: 100%;
+  max-width: 860px;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid #d9e2ef;
+  box-shadow: 0 12px 36px rgba(26, 39, 60, 0.08);
+  padding: 24px;
+}
+
+.card-header h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.card-header p {
+  margin: 6px 0 0;
+  color: #5c6f86;
+}
+
+.auth-box,
+.task-box {
+  margin-top: 22px;
+}
+
+.auth-toggle {
+  display: inline-flex;
+  border: 1px solid #c8d5e6;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.auth-toggle button {
+  border: 0;
+  padding: 10px 16px;
+  background: #f2f6fb;
+  color: #25405f;
+  cursor: pointer;
+}
+
+.auth-toggle button.active {
+  background: #195ea8;
+  color: #fff;
+}
+
+.auth-form {
+  margin-top: 16px;
+  display: grid;
+  gap: 12px;
+}
+
+.auth-form label {
+  display: grid;
+  gap: 6px;
+  font-weight: 600;
+  color: #294563;
+}
+
+.auth-form input,
+.create-task-form input,
+.task-edit-input {
+  border: 1px solid #bfd0e3;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 15px;
+}
+
+button {
+  border: 0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  background: #195ea8;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.user-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.user-bar p {
+  margin: 2px 0 0;
+  font-size: 14px;
+  color: #5c6f86;
+}
+
+.create-task-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.create-task-form input {
+  flex: 1;
+}
+
+.task-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.task-item {
+  border: 1px solid #d9e2ef;
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fbfdff;
+}
+
+.task-item span {
+  flex: 1;
+  font-weight: 600;
+}
+
+.task-item span.done {
+  text-decoration: line-through;
+  color: #788ba3;
+}
+
+.task-actions {
+  display: inline-flex;
+  gap: 8px;
+}
+
+.task-actions .danger {
+  background: #be3f3f;
+}
+
+.task-actions .ghost {
+  background: #6d7f96;
+}
+
+.task-check input {
+  width: 18px;
+  height: 18px;
+}
+
+.empty {
+  text-align: center;
+  color: #637890;
+  border: 1px dashed #bfd0e3;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.message {
+  margin-top: 14px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.message.success {
+  background: #eaf8f0;
+  color: #20613e;
+  border: 1px solid #bde8cd;
+}
+
+.message.error {
+  background: #ffecec;
+  color: #8f2f2f;
+  border: 1px solid #f8c4c4;
+}
+
+@media (max-width: 700px) {
+  .card {
+    padding: 18px;
+  }
+
+  .task-item {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .task-actions {
+    width: 100%;
+  }
+}

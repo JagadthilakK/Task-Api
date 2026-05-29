@@ -16,6 +16,7 @@ function App() {
     () => import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001',
     []
   );
+  const isNgrokBase = apiBase.includes('ngrok-free.app');
 
   const [token, setToken] = useState(localStorage.getItem(TOKEN_KEY) || '');
   const [user, setUser] = useState(() => {
@@ -56,6 +57,10 @@ function App() {
     const headers = {
       'Content-Type': 'application/json',
     };
+
+    if (isNgrokBase) {
+      headers['ngrok-skip-browser-warning'] = 'true';
+    }
 
     if (requiresAuth && token) {
       logFlow('apiRequest:authHeader', 'Bearer token attached');

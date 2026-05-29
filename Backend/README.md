@@ -203,3 +203,5 @@ Authorization: Bearer <token>
 - API responses expose `id` (not `_id`) and hide `__v`.
 - Data is persisted in MongoDB (Atlas), not in-memory.
 - Tasks are user-scoped; each user sees only their own tasks.
+- When using free ngrok for backend and Vercel for frontend, ngrok URL changes after restart.
+- If ngrok URL changes, update `VITE_API_BASE_URL` in Vercel and redeploy frontend.
